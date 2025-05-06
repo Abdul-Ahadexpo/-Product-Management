@@ -46,16 +46,16 @@ const SummaryStats: React.FC = () => {
   }
   
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-      <h2 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
-        <BarChart size={20} className="mr-2 text-blue-600" />
+    <div className="bg-white rounded-xl shadow-md p-8 mb-8 max-w-screen-xl mx-auto">
+      <h2 className="text-2xl font-semibold mb-6 text-gray-800 flex items-center">
+        <BarChart size={24} className="mr-3 text-blue-600" />
         Business Summary
       </h2>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
         <SummaryCard
           title="Inventory Status"
-          icon={<Package size={18} className="text-blue-500" />}
+          icon={<Package size={20} className="text-blue-500" />}
           mainValue={summary.totalProducts}
           mainLabel="Total Products"
           items={[
@@ -67,7 +67,7 @@ const SummaryStats: React.FC = () => {
         
         <SummaryCard
           title="Financial Overview"
-          icon={<DollarSign size={18} className="text-green-500" />}
+          icon={<DollarSign size={20} className="text-green-500" />}
           mainValue={formatCurrency(summary.totalInvestment)}
           mainLabel="Total Investment"
           items={[
@@ -79,8 +79,8 @@ const SummaryStats: React.FC = () => {
         <SummaryCard
           title="Profit Analysis"
           icon={summary.totalProfit >= 0 
-            ? <TrendingUp size={18} className="text-green-500" /> 
-            : <TrendingDown size={18} className="text-red-500" />
+            ? <TrendingUp size={20} className="text-green-500" /> 
+            : <TrendingDown size={20} className="text-red-500" />
           }
           mainValue={formatCurrency(Math.abs(summary.totalProfit))}
           mainLabel={summary.totalProfit >= 0 ? "Total Profit" : "Total Loss"}
@@ -120,24 +120,24 @@ const SummaryCard: React.FC<SummaryCardProps> = ({
   accentColor = "text-blue-600"
 }) => {
   return (
-    <div className={`bg-white rounded-lg border p-4 transition-all duration-300 hover:shadow-md ${className}`}>
-      <div className="flex justify-between items-center mb-3">
-        <h3 className="text-sm font-medium text-gray-600">{title}</h3>
-        <div className="rounded-full bg-gray-100 p-1">
+    <div className={`bg-white rounded-xl border p-6 transition-all duration-300 hover:shadow-lg ${className}`}>
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-base font-medium text-gray-700">{title}</h3>
+        <div className="rounded-full bg-gray-100 p-2">
           {icon}
         </div>
       </div>
       
-      <div className="mb-3">
-        <p className={`text-2xl font-bold ${accentColor}`}>{mainValue}</p>
-        <p className="text-xs text-gray-500">{mainLabel}</p>
+      <div className="mb-4">
+        <p className={`text-3xl font-extrabold ${accentColor}`}>{mainValue}</p>
+        <p className="text-sm text-gray-500">{mainLabel}</p>
       </div>
       
-      <div className="space-y-1 text-sm">
+      <div className="space-y-2 text-sm">
         {items.map((item, index) => (
-          <div key={index} className="flex justify-between">
-            <span className="text-gray-600">{item.label}:</span>
-            <span className="font-medium">{item.value}</span>
+          <div key={index} className="flex justify-between text-gray-600">
+            <span>{item.label}:</span>
+            <span className="font-semibold">{item.value}</span>
           </div>
         ))}
       </div>
