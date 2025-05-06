@@ -88,7 +88,7 @@ const SummaryStats: React.FC = () => {
             { 
               label: 'Profit Margin', 
               value: summary.totalRevenue > 0 
-                ? `{((summary.totalProfit / summary.totalRevenue) * 100).toFixed(1)}%TK` 
+                ? `${((summary.totalProfit / summary.totalRevenue) * 100).toFixed(1)}%` 
                 : '0%' 
             }
           ]}
