@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Product, ProductSummary } from '../../types/Product';
 import { getProducts } from '../../firebase/productService';
-import { calculateSummary, formatCurrency } from '../../utils/calculations';
+import { calculateSummary } from '../../utils/calculations';
 import { 
   TrendingUp, 
   TrendingDown, 
   Package, 
-  ShoppingCart, 
   DollarSign,
   BarChart
 } from 'lucide-react';
+
+const formatBDTCurrency = (value: number): string => {
+  return `${value.toLocaleString()} TK`;
+};
 
 const SummaryStats: React.FC = () => {
   const [summary, setSummary] = useState<ProductSummary>({
@@ -52,7 +55,7 @@ const SummaryStats: React.FC = () => {
         Business Summary
       </h2>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         <SummaryCard
           title="Inventory Status"
           icon={<Package size={18} className="text-blue-500" />}
@@ -68,10 +71,10 @@ const SummaryStats: React.FC = () => {
         <SummaryCard
           title="Financial Overview"
           icon={<DollarSign size={18} className="text-green-500" />}
-          mainValue={formatCurrency(summary.totalInvestment)}
+          mainValue={formatBDTCurrency(summary.totalInvestment)}
           mainLabel="Total Investment"
           items={[
-            { label: 'Revenue', value: formatCurrency(summary.totalRevenue) }
+            { label: 'Revenue', value: formatBDTCurrency(summary.totalRevenue) }
           ]}
           className="border-green-100"
         />
@@ -82,7 +85,7 @@ const SummaryStats: React.FC = () => {
             ? <TrendingUp size={18} className="text-green-500" /> 
             : <TrendingDown size={18} className="text-red-500" />
           }
-          mainValue={formatCurrency(Math.abs(summary.totalProfit))}
+          mainValue={formatBDTCurrency(Math.abs(summary.totalProfit))}
           mainLabel={summary.totalProfit >= 0 ? "Total Profit" : "Total Loss"}
           items={[
             { 
