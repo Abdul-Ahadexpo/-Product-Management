@@ -47,12 +47,12 @@ const SummaryStats: React.FC = () => {
   
   return (
     <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-      <h2 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
+      <h2 className="text-xl font-semibold mb-6 text-gray-800 flex items-center">
         <BarChart size={20} className="mr-2 text-blue-600" />
         Business Summary
       </h2>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
         <SummaryCard
           title="Inventory Status"
           icon={<Package size={18} className="text-blue-500" />}
@@ -120,16 +120,16 @@ const SummaryCard: React.FC<SummaryCardProps> = ({
   accentColor = "text-blue-600"
 }) => {
   return (
-    <div className={`bg-white rounded-lg border p-4 transition-all duration-300 hover:shadow-md ${className}`}>
-      <div className="flex justify-between items-center mb-3">
+    <div className={`bg-white rounded-lg border p-6 transition-all duration-300 hover:shadow-md min-h-[180px] ${className}`}>
+      <div className="flex justify-between items-center mb-4">
         <h3 className="text-sm font-medium text-gray-600">{title}</h3>
         <div className="rounded-full bg-gray-100 p-1">
           {icon}
         </div>
       </div>
       
-      <div className="mb-3">
-        <p className={`text-2xl font-bold ${accentColor}`}>{mainValue}</p>
+      <div className="mb-4">
+        <p className={`text-3xl font-bold ${accentColor}`}>{mainValue}</p>
         <p className="text-xs text-gray-500">{mainLabel}</p>
       </div>
       
