@@ -1,4 +1,4 @@
-export type ProductCategory = 'Electronics' | 'Clothing' | 'Accessories' | 'Other';
+export type ProductCategory = 'Electronics' | 'Anime' | 'Accessories' | 'Toys';
 
 export interface Product {
   id: string;
