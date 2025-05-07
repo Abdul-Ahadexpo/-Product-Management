@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Product } from '../../types/Product';
-import { markProductAsSold, deleteProduct } from '../../firebase/productService';
+import { markProductAsSold, deleteProduct, updateProduct } from '../../firebase/productService';
 import { 
   calculateProfitLoss, 
   formatCurrency, 
@@ -15,7 +15,9 @@ import {
   ShoppingCart,
   CheckCircle,
   AlertCircle,
-  Tag
+  Tag,
+  Edit2,
+  X
 } from 'lucide-react';
 
 interface ProductItemProps {
@@ -27,6 +29,8 @@ const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
   const [isSelling, setIsSelling] = useState(false);
   const [soldPrice, setSoldPrice] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedProduct, setEditedProduct] = useState(product);
   
   const profitLoss = calculateProfitLoss(product);
   const profitLossPercentage = calculateProfitLossPercentage(product);
@@ -70,6 +74,18 @@ const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
       }
     }
   };
+
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await updateProduct(product.id, editedProduct);
+      setIsEditing(false);
+      toast.success('Product updated successfully!');
+    } catch (error) {
+      toast.error('Failed to update product. Please try again.');
+      console.error('Error updating product:', error);
+    }
+  };
   
   const isLowStock = !product.isSold && product.quantity <= (product.lowStockThreshold || 5);
   
@@ -78,56 +94,170 @@ const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
       product.isSold ? 'bg-gray-50' : isLowStock ? 'border-amber-200 bg-amber-50' : 'hover:shadow-md'
     }`}>
       <div className="p-4">
-        <div className="flex justify-between items-start">
-          <div className="flex items-start space-x-2">
-            {product.isSold ? (
-              <CheckCircle size={20} className="text-green-500 mt-1" />
-            ) : isLowStock ? (
-              <AlertCircle size={20} className="text-amber-500 mt-1" />
-            ) : (
-              <Package size={20} className="text-blue-600 mt-1" />
-            )}
-            <div>
-              <h3 className="text-lg font-medium text-gray-800">{product.name}</h3>
-              <div className="flex items-center space-x-2 text-sm text-gray-500">
-                <span>Quantity: {product.quantity}</span>
-                <span>•</span>
-                <span>Original: {formatCurrency(product.originalPrice)}</span>
-                <span>•</span>
-                <span className="flex items-center">
-                  <Tag size={14} className="mr-1" />
-                  {product.category}
-                </span>
-              </div>
-              {isLowStock && (
-                <p className="text-sm text-amber-600 mt-1 font-medium">
-                  Low stock alert! Below threshold of {product.lowStockThreshold}
-                </p>
+        {!isEditing ? (
+          <div className="flex justify-between items-start">
+            <div className="flex items-start space-x-2">
+              {product.isSold ? (
+                <CheckCircle size={20} className="text-green-500 mt-1" />
+              ) : isLowStock ? (
+                <AlertCircle size={20} className="text-amber-500 mt-1" />
+              ) : (
+                <Package size={20} className="text-blue-600 mt-1" />
               )}
+              <div>
+                <h3 className="text-lg font-medium text-gray-800">{product.name}</h3>
+                <div className="flex items-center space-x-2 text-sm text-gray-500">
+                  <span>Quantity: {product.quantity}</span>
+                  <span>•</span>
+                  <span>Original: {formatCurrency(product.originalPrice)}</span>
+                  <span>•</span>
+                  <span className="flex items-center">
+                    <Tag size={14} className="mr-1" />
+                    {product.category}
+                  </span>
+                </div>
+                {isLowStock && (
+                  <p className="text-sm text-amber-600 mt-1 font-medium">
+                    Low stock alert! Below threshold of {product.lowStockThreshold}
+                  </p>
+                )}
+              </div>
+            </div>
+            
+            <div className="flex space-x-1">
+              {!product.isSold && (
+                <>
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className="text-white bg-green-600 hover:bg-green-700 rounded p-1 transition-colors"
+                    title="Edit Product"
+                  >
+                    <Edit2 size={16} />
+                  </button>
+                  <button
+                    onClick={() => setIsExpanded(!isExpanded)}
+                    className="text-white bg-blue-600 hover:bg-blue-700 rounded p-1 transition-colors"
+                    title="Mark as Sold"
+                  >
+                    <DollarSign size={16} />
+                  </button>
+                </>
+              )}
+              
+              <button
+                onClick={handleDeleteProduct}
+                disabled={isDeleting}
+                className="text-white bg-red-600 hover:bg-red-700 rounded p-1 transition-colors"
+                title="Delete Product"
+              >
+                <Trash2 size={16} />
+              </button>
             </div>
           </div>
-          
-          <div className="flex space-x-1">
-            {!product.isSold && (
+        ) : (
+          <form onSubmit={handleEditSubmit} className="space-y-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-medium">Edit Product</h3>
               <button
-                onClick={() => setIsExpanded(!isExpanded)}
-                className="text-white bg-blue-600 hover:bg-blue-700 rounded p-1 transition-colors"
-                title="Mark as Sold"
+                type="button"
+                onClick={() => setIsEditing(false)}
+                className="text-gray-500 hover:text-gray-700"
               >
-                <DollarSign size={16} />
+                <X size={20} />
               </button>
-            )}
+            </div>
             
-            <button
-              onClick={handleDeleteProduct}
-              disabled={isDeleting}
-              className="text-white bg-red-600 hover:bg-red-700 rounded p-1 transition-colors"
-              title="Delete Product"
-            >
-              <Trash2 size={16} />
-            </button>
-          </div>
-        </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Product Name
+              </label>
+              <input
+                type="text"
+                value={editedProduct.name}
+                onChange={(e) => setEditedProduct({...editedProduct, name: e.target.value})}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                required
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Category
+              </label>
+              <select
+                value={editedProduct.category}
+                onChange={(e) => setEditedProduct({...editedProduct, category: e.target.value as ProductCategory})}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                required
+              >
+                <option value="Electronics">Electronics</option>
+                <option value="Anime">Anime</option>
+                <option value="Accessories">Accessories</option>
+                <option value="Toys">Toys</option>
+              </select>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Quantity
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  value={editedProduct.quantity}
+                  onChange={(e) => setEditedProduct({...editedProduct, quantity: parseInt(e.target.value) || 1})}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Original Price (TK)
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={editedProduct.originalPrice}
+                  onChange={(e) => setEditedProduct({...editedProduct, originalPrice: parseFloat(e.target.value) || 0})}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                  required
+                />
+              </div>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Low Stock Threshold
+              </label>
+              <input
+                type="number"
+                min="1"
+                value={editedProduct.lowStockThreshold}
+                onChange={(e) => setEditedProduct({...editedProduct, lowStockThreshold: parseInt(e.target.value) || 1})}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md"
+              />
+            </div>
+            
+            <div className="flex justify-end space-x-2">
+              <button
+                type="button"
+                onClick={() => setIsEditing(false)}
+                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
+              >
+                Save Changes
+              </button>
+            </div>
+          </form>
+        )}
         
         {product.isSold && (
           <div className="mt-3 p-2 bg-gray-50 rounded-md">
@@ -163,7 +293,7 @@ const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
                 htmlFor={`soldPrice-${product.id}`}
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Sold Price ($) *
+                Sold Price (TK) *
               </label>
               <div className="flex">
                 <input
