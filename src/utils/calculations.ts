@@ -12,11 +12,13 @@ export const calculateProfitLoss = (product: Product): number => {
 
 // Format currency 
 export const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('en-BD', {
     style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2
-  }).format(amount);
+    currency: 'BDT',
+    currencyDisplay: 'narrowSymbol',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(amount).replace('৳', '') + ' TK';
 };
 
 // Calculate profit/loss percentage
