@@ -89,9 +89,9 @@ const ProductForm: React.FC = () => {
             required
           >
             <option value="Electronics">Electronics</option>
-            <option value="Clothing">Clothing</option>
+            <option value="Clothing">Anime</option>
             <option value="Accessories">Accessories</option>
-            <option value="Other">Other</option>
+            <option value="Other">Toys</option>
           </select>
         </div>
         
