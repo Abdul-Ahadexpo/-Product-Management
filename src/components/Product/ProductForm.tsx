@@ -8,7 +8,7 @@ const ProductForm: React.FC = () => {
   const [name, setName] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [originalPrice, setOriginalPrice] = useState('');
-  const [category, setCategory] = useState<ProductCategory>('Other');
+  const [category, setCategory] = useState<ProductCategory>('Electronics');
   const [lowStockThreshold, setLowStockThreshold] = useState(5);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
@@ -36,7 +36,7 @@ const ProductForm: React.FC = () => {
       setName('');
       setQuantity(1);
       setOriginalPrice('');
-      setCategory('Other');
+      setCategory('Electronics');
       setLowStockThreshold(5);
       
       toast.success('Product added successfully!');
@@ -89,9 +89,9 @@ const ProductForm: React.FC = () => {
             required
           >
             <option value="Electronics">Electronics</option>
-            <option value="Clothing">Anime</option>
+            <option value="Anime">Anime</option>
             <option value="Accessories">Accessories</option>
-            <option value="Other">Toys</option>
+            <option value="Toys">Toys</option>
           </select>
         </div>
         
@@ -119,7 +119,7 @@ const ProductForm: React.FC = () => {
               htmlFor="originalPrice" 
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Original Price ($) *
+              Original Price (TK) *
             </label>
             <input
               id="originalPrice"
