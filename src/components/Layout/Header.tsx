@@ -7,7 +7,7 @@ const Header: React.FC = () => {
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <div className="flex items-center space-x-2">
           <Package size={28} className="text-white" />
-          <h1 className="text-xl sm:text-2xl font-bold">ProductPro</h1>
+          <h1 className="text-xl sm:text-2xl font-bold">SpinStrike</h1>
         </div>
         <div className="text-sm sm:text-base">
           <p>Business Management System</p>
