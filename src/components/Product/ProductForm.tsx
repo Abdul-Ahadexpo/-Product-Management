@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { addProduct } from '../../firebase/productService';
 import { toast } from 'react-toastify';
 import { Plus } from 'lucide-react';
+import { ProductCategory } from '../../types/Product';
 
 const ProductForm: React.FC = () => {
   const [name, setName] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [originalPrice, setOriginalPrice] = useState('');
+  const [category, setCategory] = useState<ProductCategory>('Other');
+  const [lowStockThreshold, setLowStockThreshold] = useState(5);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const handleSubmit = async (e: React.FormEvent) => {
@@ -24,6 +27,8 @@ const ProductForm: React.FC = () => {
         name,
         quantity,
         originalPrice: parseFloat(originalPrice),
+        category,
+        lowStockThreshold,
         isSold: false
       });
       
@@ -31,6 +36,8 @@ const ProductForm: React.FC = () => {
       setName('');
       setQuantity(1);
       setOriginalPrice('');
+      setCategory('Other');
+      setLowStockThreshold(5);
       
       toast.success('Product added successfully!');
     } catch (error) {
@@ -65,6 +72,27 @@ const ProductForm: React.FC = () => {
             placeholder="Enter product name"
             required
           />
+        </div>
+        
+        <div>
+          <label 
+            htmlFor="category" 
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Category *
+          </label>
+          <select
+            id="category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value as ProductCategory)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            required
+          >
+            <option value="Electronics">Electronics</option>
+            <option value="Clothing">Clothing</option>
+            <option value="Accessories">Accessories</option>
+            <option value="Other">Other</option>
+          </select>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -105,6 +133,26 @@ const ProductForm: React.FC = () => {
               required
             />
           </div>
+        </div>
+        
+        <div>
+          <label 
+            htmlFor="lowStockThreshold" 
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Low Stock Alert Threshold
+          </label>
+          <input
+            id="lowStockThreshold"
+            type="number"
+            min="1"
+            value={lowStockThreshold}
+            onChange={(e) => setLowStockThreshold(parseInt(e.target.value) || 1)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+          />
+          <p className="text-sm text-gray-500 mt-1">
+            Alert when quantity falls below this number
+          </p>
         </div>
         
         <div className="pt-2">

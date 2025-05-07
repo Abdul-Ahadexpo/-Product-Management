@@ -61,7 +61,8 @@ export const updateProduct = async (id: string, updates: Partial<Product>) => {
 export const markProductAsSold = async (id: string, soldPrice: number) => {
   return updateProduct(id, {
     isSold: true,
-    soldPrice
+    soldPrice,
+    soldDate: Date.now()
   });
 };
 

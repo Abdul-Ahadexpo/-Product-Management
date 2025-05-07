@@ -14,7 +14,8 @@ import {
   Package, 
   ShoppingCart,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  Tag
 } from 'lucide-react';
 
 interface ProductItemProps {
@@ -70,24 +71,39 @@ const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
     }
   };
   
+  const isLowStock = !product.isSold && product.quantity <= (product.lowStockThreshold || 5);
+  
   return (
     <div className={`bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 ${
-      product.isSold ? 'bg-gray-50' : 'hover:shadow-md'
+      product.isSold ? 'bg-gray-50' : isLowStock ? 'border-amber-200 bg-amber-50' : 'hover:shadow-md'
     }`}>
       <div className="p-4">
         <div className="flex justify-between items-start">
           <div className="flex items-start space-x-2">
             {product.isSold ? (
               <CheckCircle size={20} className="text-green-500 mt-1" />
+            ) : isLowStock ? (
+              <AlertCircle size={20} className="text-amber-500 mt-1" />
             ) : (
               <Package size={20} className="text-blue-600 mt-1" />
             )}
             <div>
               <h3 className="text-lg font-medium text-gray-800">{product.name}</h3>
-              <p className="text-sm text-gray-500">
-                Quantity: {product.quantity} • 
-                Original: {formatCurrency(product.originalPrice)}
-              </p>
+              <div className="flex items-center space-x-2 text-sm text-gray-500">
+                <span>Quantity: {product.quantity}</span>
+                <span>•</span>
+                <span>Original: {formatCurrency(product.originalPrice)}</span>
+                <span>•</span>
+                <span className="flex items-center">
+                  <Tag size={14} className="mr-1" />
+                  {product.category}
+                </span>
+              </div>
+              {isLowStock && (
+                <p className="text-sm text-amber-600 mt-1 font-medium">
+                  Low stock alert! Below threshold of {product.lowStockThreshold}
+                </p>
+              )}
             </div>
           </div>
           
