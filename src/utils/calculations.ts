@@ -13,12 +13,10 @@ export const calculateProfitLoss = (product: Product): number => {
 // Format currency 
 export const formatCurrency = (amount: number): string => {
   return new Intl.NumberFormat('en-BD', {
-    style: 'currency',
-    currency: 'BDT',
-    currencyDisplay: 'narrowSymbol',
+    style: 'decimal',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0
-  }).format(amount).replace('৳', '') + ' TK';
+  }).format(amount) + ' TK';
 };
 
 // Calculate profit/loss percentage
@@ -84,16 +82,14 @@ const getLowStockItems = (products: Product[]): Product[] => {
 const getCategoryBreakdown = (products: Product[]): Record<ProductCategory, number> => {
   const breakdown: Record<ProductCategory, number> = {
     Electronics: 0,
-    Clothing: 0,
+    Anime: 0,
     Accessories: 0,
-    Other: 0
+    Toys: 0
   };
   
   products.forEach(product => {
     if (product.category) {
       breakdown[product.category]++;
-    } else {
-      breakdown.Other++;
     }
   });
   
@@ -135,8 +131,6 @@ export const calculateSummary = (products: Product[]): ProductSummary => {
     monthlySales,
     bestSellers,
     lowStockItems,
-    categoryBreakdown,
-    averagePrice: products.length > 0 ? totalInvestment / products.length : 0,
-    lowStockCount: lowStockItems.length
+    categoryBreakdown
   };
 };
