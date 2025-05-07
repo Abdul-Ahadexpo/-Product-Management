@@ -7,7 +7,20 @@ interface TabsProps {
 }
 
 export const Tabs: React.FC<TabsProps> = ({ value, onValueChange, children }) => {
-  return <div>{children}</div>;
+  const childrenArray = React.Children.toArray(children);
+  return (
+    <div>
+      {React.Children.map(childrenArray, child => {
+        if (React.isValidElement(child)) {
+          return React.cloneElement(child, {
+            value,
+            onValueChange,
+          });
+        }
+        return child;
+      })}
+    </div>
+  );
 };
 
 interface TabsListProps {
@@ -27,11 +40,13 @@ interface TabsTriggerProps {
   value: string;
   children: React.ReactNode;
   className?: string;
+  onClick?: () => void;
 }
 
-export const TabsTrigger: React.FC<TabsTriggerProps> = ({ value, children, className }) => {
+export const TabsTrigger: React.FC<TabsTriggerProps> = ({ value, children, className, onClick }) => {
   return (
     <button
+      onClick={onClick}
       className={`px-4 py-2 rounded-md text-sm font-medium transition-colors
         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
         ${value === 'inventory' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}
